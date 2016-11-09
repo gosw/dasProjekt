@@ -4,14 +4,14 @@ import messages.ActiveMQMessage;
 import messages.DirectoryMessage;
 import messages.KafkaMessage;
 import messages.Message;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
 /**
  * Created by nicob on 02.11.2016.
+ * maps json-strings to message objects and backwards
  */
 
 public class JsonConverter {
@@ -29,21 +29,6 @@ public class JsonConverter {
     public KafkaMessage getKafkaMessage(String jsonString){
         try {
             return mapper.readValue(jsonString, KafkaMessage.class);
-        } catch (JsonMappingException jsonMapEx){
-            jsonMapEx.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public ActiveMQMessage getActiveMqMessage(String jsonString){
-        try {
-            return mapper.readValue(jsonString, ActiveMQMessage.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,10 +38,6 @@ public class JsonConverter {
     public DirectoryMessage getDirectoryMessage(String jsonString){
         try {
             return mapper.readValue(jsonString, DirectoryMessage.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

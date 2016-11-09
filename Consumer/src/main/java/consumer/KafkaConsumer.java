@@ -14,9 +14,6 @@ import messages.KafkaMessage;
 
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,14 +22,15 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by nicob on 02.11.2016.
+ * class for consuming kafka messages
  */
 
 public class KafkaConsumer implements Runnable {
-    //Class attributes
+    //class attributes
     private static KafkaConsumer instance;
     private String topicName;
     private ConsumerConfig consumerConfig;
-    private Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
+//    private Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
     private KafkaConsumer(String address, String topic) {
         Properties properties = new Properties();
@@ -59,7 +57,7 @@ public class KafkaConsumer implements Runnable {
     }
 
     public void run() {
-        logger.info("Starting the KafkaConsumer...");
+        System.out.println("Starting the KafkaConsumer...");
 
         ConsumerConnector connector = kafka.consumer.Consumer.createJavaConsumerConnector(consumerConfig);
         Map<String, List<KafkaStream<byte[], byte[]>>> messages = connector.createMessageStreams(ImmutableMap.of(topicName, 1));
@@ -72,7 +70,7 @@ public class KafkaConsumer implements Runnable {
                     String jsonString = new String(messageAndMetadata.message());
                     KafkaMessage message = JsonConverter.getInstance().getKafkaMessage(jsonString);
                     message.setValue(message.getValue());
-                    //DatabaseSender.getDatabaseSender().insertMessage(message);
+//                    DatabaseSender.getDatabaseSender().insertMessage(message);
                     System.out.println(message.toString());
 //                    FiniteMachine.handleMessage(sm, message);
                 }
