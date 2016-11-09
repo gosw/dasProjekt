@@ -1,10 +1,8 @@
 package consumer;
 
 import converter.JsonConverter;
-import database.DatabaseSender;
 import messages.DirectoryMessage;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +14,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 /**
  * Created by nicob on 02.11.2016.
+ * class for checking the directory for updates
  */
 
 public class DirectoryListener implements Runnable {
@@ -24,7 +23,7 @@ public class DirectoryListener implements Runnable {
     private static String filePath;
 
     private DirectoryListener(String filePath) {
-        this.filePath = filePath;
+        DirectoryListener.filePath = filePath;
     }
 
     public static DirectoryListener getDirectoryListener(String filePath){
@@ -61,7 +60,7 @@ public class DirectoryListener implements Runnable {
                 for (WatchEvent watchEvent : watchKey.pollEvents()) {
                     kind = watchEvent.kind();
                     if (OVERFLOW == kind) {
-                        continue;
+                        //empty if-block; only file-create is important
                     }
                     else if (ENTRY_CREATE == kind){
                         Path filePath = ((WatchEvent<Path>) watchEvent).context();
@@ -70,7 +69,7 @@ public class DirectoryListener implements Runnable {
                         String jsonString = data.readLine();
                         while (jsonString != null){
                             DirectoryMessage message = JsonConverter.getInstance().getDirectoryMessage(jsonString);
-                            //DatabaseSender.getDatabaseSender().insertMessage(message);
+//                            DatabaseSender.getDatabaseSender().insertMessage(message);
                             System.out.println(message.toString());
                             jsonString = data.readLine();
                         }
@@ -82,10 +81,8 @@ public class DirectoryListener implements Runnable {
                     break;
                 }
             }
-        } catch (IOException ioEx) {
+        } catch (IOException | InterruptedException ioEx) {
             ioEx.printStackTrace();
-        } catch (InterruptedException inEx) {
-            inEx.printStackTrace();
         }
     }
 

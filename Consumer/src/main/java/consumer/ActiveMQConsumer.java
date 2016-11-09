@@ -1,76 +1,88 @@
 package consumer;
 
-import converter.JsonConverter;
+import converter.XmlConverter;
 import data.Constants;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 
 import messages.ActiveMQMessage;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.*;
 
 /**
  * Created by nicob on 02.11.2016.
  */
 
 public class ActiveMQConsumer implements Runnable {
-
-    private Connection connection;
-    private String topicName;
+    Session session = null;
+    Connection connection = null;
+    String topicName = "";
 
     private static ActiveMQConsumer instance;
 
-    private ActiveMQConsumer(String topicName, int port){
+    private ActiveMQConsumer(String topicName, int port) {
         this.topicName = topicName;
         String amqpServer = "tcp://" + Constants.getServer() + ":" + port;
-        ActiveMQConnectionFactory amqConnectionFactory = new ActiveMQConnectionFactory(amqpServer);
-
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(amqpServer);
         try {
-            connection = amqConnectionFactory.createConnection();
-            connection.start();
+            connection = connectionFactory.createConnection();
         } catch (JMSException e) {
             e.printStackTrace();
         }
     }
 
-    public static ActiveMQConsumer getActiveMqConsumer(String topicName, int port){
-        if (instance == null){
+    public static ActiveMQConsumer getActiveMqConsumer(String topicName, int port) {
+        if (instance == null) {
             instance = new ActiveMQConsumer(topicName, port);
         }
         return instance;
     }
 
+    @Override
     public void run() {
+        System.out.println("Bin im ActiveMQ consumer.Consumer");
         try {
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = session.createTopic(topicName);
+            connection.start();
+
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            Destination destination = session.createTopic(topicName + "?consumer.dispatchAsync= false");
+
             MessageConsumer messageConsumer = session.createConsumer(destination);
 
-            messageConsumer.setMessageListener(amqpMessage -> {
-                if (amqpMessage instanceof TextMessage){
-                    TextMessage textMessage = (TextMessage) amqpMessage;
-                    String text = "";
+            while (true) {
+                messageConsumer.setMessageListener(message -> {
+                    System.out.println("Bin im Message-Listener");
+                    if (message instanceof TextMessage) {
+                        TextMessage textMessage = (TextMessage) message;
+                        String text = "";
 
-                    try {
-                        text = textMessage.getText();
-                    } catch (JMSException e) {
-                        e.printStackTrace();
+                        try {
+                            text = textMessage.getText();
+                        } catch (JMSException e) {
+                            e.printStackTrace();
+                        }
+
+                        ActiveMQMessage mqMessage = XmlConverter.getActiveMqMessage(text);
+                        System.out.println(mqMessage);
+                    } else {
+                        System.out.println(message);
                     }
-
-                    //ActiveMQMessage message = JsonConverter.getInstance().getActiveMqMessage(text);
-                    System.out.println(text);
+                });
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (session != null) {
+                    session.close();
                 }
-                else {
-                    System.out.println("Message received: " + amqpMessage);
+                if (connection != null) {
+                    connection.close();
                 }
-            });
-
-        } catch (JMSException e) {
-            e.printStackTrace();
+            } catch (JMSException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println("Bin im ActiveMQ consumer.Consumer fertig");
     }
 }

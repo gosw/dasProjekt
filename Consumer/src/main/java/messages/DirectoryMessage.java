@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Created by nicob on 02.11.2016.
+ * message class for erp data from file output
  */
 
 public class DirectoryMessage implements Message {

@@ -4,13 +4,17 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Created by nicob on 02.11.2016.
+ * message class for production line messages
  */
 
 public class KafkaMessage implements Message {
     @JsonProperty("value")
     private Object value;
+    @JsonProperty("booleanValue")
     private boolean booleanValue;
+    @JsonProperty("intValue")
     private int intValue;
+    @JsonProperty("doubleValue")
     private double doubleValue;
     @JsonProperty("status")
     private String status;
@@ -26,24 +30,16 @@ public class KafkaMessage implements Message {
     public void setValue(Object value) {
         this.value = value;
 
-        String stringValue = value.toString();
-        if (stringValue.equalsIgnoreCase("true") || stringValue.equalsIgnoreCase("false")) {
+        String stringValue = value.toString(); //get value as String
+        if (stringValue.equalsIgnoreCase("true") || stringValue.equalsIgnoreCase("false")) { //set boolean value
             booleanValue = Boolean.valueOf(stringValue);
         }
-        else if (stringValue.contains(".") || stringValue.contains(",")){
+        else if (stringValue.contains(".") || stringValue.contains(",")){ //set double value
             doubleValue = Double.valueOf(stringValue);
         }
-        else {
+        else { //set integer value
             intValue = Integer.valueOf(stringValue);
         }
-    }
-
-    public boolean isBooleanValue() {
-        return booleanValue;
-    }
-
-    public String getItemName() {
-        return itemName;
     }
 
     @Override
