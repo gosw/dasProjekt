@@ -30,7 +30,6 @@ public class KafkaConsumer implements Runnable {
     private static KafkaConsumer instance;
     private String topicName;
     private ConsumerConfig consumerConfig;
-//    private Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
     private KafkaConsumer(String address, String topic) {
         Properties properties = new Properties();
@@ -57,7 +56,7 @@ public class KafkaConsumer implements Runnable {
     }
 
     public void run() {
-        System.out.println("Starting the KafkaConsumer...");
+        //System.out.println("Starting the KafkaConsumer...");
 
         ConsumerConnector connector = kafka.consumer.Consumer.createJavaConsumerConnector(consumerConfig);
         Map<String, List<KafkaStream<byte[], byte[]>>> messages = connector.createMessageStreams(ImmutableMap.of(topicName, 1));
@@ -67,7 +66,7 @@ public class KafkaConsumer implements Runnable {
         for (final KafkaStream<byte[], byte[]> messageStream : messageStreams) {
             executorService.submit(() -> {
                 for (MessageAndMetadata<byte[], byte[]> messageAndMetadata : messageStream) {
-                    String jsonString = new String(messageAndMetadata.message());
+                    String jsonString = new String(messageAndMetadata.message()); //change messageStream to json-String
                     KafkaMessage message = JsonConverter.getInstance().getKafkaMessage(jsonString);
                     message.setValue(message.getValue());
 //                    DatabaseSender.getDatabaseSender().insertMessage(message);

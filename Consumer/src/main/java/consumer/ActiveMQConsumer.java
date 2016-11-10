@@ -5,11 +5,13 @@ import data.Constants;
 
 import javax.jms.*;
 
+import database.DatabaseSender;
 import messages.ActiveMQMessage;
 import org.apache.activemq.*;
 
 /**
  * Created by nicob on 02.11.2016.
+ * consumer for activemq messages
  */
 
 public class ActiveMQConsumer implements Runnable {
@@ -39,19 +41,22 @@ public class ActiveMQConsumer implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Bin im ActiveMQ consumer.Consumer");
         try {
+            //start connection
             connection.start();
 
+            //create a session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
+            //determine destination
             Destination destination = session.createTopic(topicName + "?consumer.dispatchAsync= false");
 
+            //create consumer
             MessageConsumer messageConsumer = session.createConsumer(destination);
 
+            //receive and convert message
             while (true) {
                 messageConsumer.setMessageListener(message -> {
-                    System.out.println("Bin im Message-Listener");
                     if (message instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message;
                         String text = "";
@@ -63,6 +68,7 @@ public class ActiveMQConsumer implements Runnable {
                         }
 
                         ActiveMQMessage mqMessage = XmlConverter.getActiveMqMessage(text);
+                        DatabaseSender.getDatabaseSender().insertMessage(mqMessage);
                         System.out.println(mqMessage);
                     } else {
                         System.out.println(message);
@@ -83,6 +89,5 @@ public class ActiveMQConsumer implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("Bin im ActiveMQ consumer.Consumer fertig");
     }
 }
