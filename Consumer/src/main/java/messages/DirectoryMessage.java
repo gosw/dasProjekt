@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * message class for erp data from file output
  */
 
-public class DirectoryMessage implements Message {
+public class DirectoryMessage extends Message {
     @JsonProperty("em1")
     private double em1;
     @JsonProperty("em2")
@@ -29,7 +29,7 @@ public class DirectoryMessage implements Message {
 
     @Override
     public String toString() {
-        return "Directory-Message: " + "overallStatus: " + overallStatus + "; em1: " + em1 + "; em2: " + em2 +
+        return "Directory-Message: " + "overallStatus: " + overallStatus + "; orderNumber: " + getOrderNumber() + "; em1: " + em1 + "; em2: " + em2 +
                 "; a1: " + a1 + "; a2: " + a2 + "; b1: " + b1 + "; b2: " + b2 + "; ts_start: " + ts_start + "; ts_stop: " + ts_stop;
     }
 }

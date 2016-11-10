@@ -5,5 +5,14 @@ package messages;
  * allows generic transfer for messages
  */
 
-public interface Message {
+public class Message {
+    private String orderNumber;
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
 }

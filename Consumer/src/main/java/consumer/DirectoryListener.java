@@ -69,6 +69,7 @@ public class DirectoryListener implements Runnable {
                         String jsonString = data.readLine();
                         while (jsonString != null){
                             DirectoryMessage message = JsonConverter.getInstance().getDirectoryMessage(jsonString);
+                            message.setOrderNumber(Consumer.getCURRENT_ORDER_NUMBER());
 //                            DatabaseSender.getDatabaseSender().insertMessage(message);
                             System.out.println(message.toString());
                             jsonString = data.readLine();

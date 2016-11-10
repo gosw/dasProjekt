@@ -69,6 +69,7 @@ public class KafkaConsumer implements Runnable {
                     String jsonString = new String(messageAndMetadata.message()); //change messageStream to json-String
                     KafkaMessage message = JsonConverter.getInstance().getKafkaMessage(jsonString);
                     message.setValue(message.getValue());
+                    message.setOrderNumber(Consumer.getCURRENT_ORDER_NUMBER());
 //                    DatabaseSender.getDatabaseSender().insertMessage(message);
                     System.out.println(message.toString());
 //                    FiniteMachine.handleMessage(sm, message);

@@ -8,6 +8,9 @@ import data.Constants;
  */
 
 public class Consumer {
+
+    private static String CURRENT_ORDER_NUMBER;
+
     public static void main(String[] args) {
         Thread amqpThread = new Thread(ActiveMQConsumer.getActiveMqConsumer(Constants.AMQP_TOPIC, Constants.AMQP_PORT));
         amqpThread.start();
@@ -17,5 +20,13 @@ public class Consumer {
 
         Thread directoryThread = new Thread(DirectoryListener.getDirectoryListener(Constants.FILE_PATH));
         directoryThread.start();
+    }
+
+    public static String getCURRENT_ORDER_NUMBER() {
+        return CURRENT_ORDER_NUMBER;
+    }
+
+    public static void setCURRENT_ORDER_NUMBER(String curOrderNumber) {
+        CURRENT_ORDER_NUMBER = curOrderNumber;
     }
 }
