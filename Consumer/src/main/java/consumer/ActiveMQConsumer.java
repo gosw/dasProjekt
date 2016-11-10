@@ -69,7 +69,7 @@ public class ActiveMQConsumer implements Runnable {
 
                         ActiveMQMessage mqMessage = XmlConverter.getActiveMqMessage(text);
                         Consumer.setCURRENT_ORDER_NUMBER(mqMessage.getOrderNumber());
-                        DatabaseSender.getDatabaseSender().insertMessage(mqMessage);
+//                        DatabaseSender.getDatabaseSender().insertMessage(mqMessage);
                         System.out.println(mqMessage);
                     } else {
                         System.out.println(message);
