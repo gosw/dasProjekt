@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash &
 
 # start kafka
 /kafka/bin/zookeeper-server-start.sh /kafka/config/zookeeper.properties &
