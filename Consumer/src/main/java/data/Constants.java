@@ -8,7 +8,7 @@ package data;
 public class Constants {
 
     //are we on a windows machine
-    public static final boolean WINDOWS_MACHINE = true;
+    public static final boolean WINDOWS_MACHINE = System.getProperty("os.name").toLowerCase().matches("(.*)windows(.*)");
 
     //kafka attributes
     public static final int KAFKA_PORT = 1001;
@@ -22,7 +22,7 @@ public class Constants {
     public static final String PARTITION = "partition.assignment.strategy";
 
     //path to erp file
-    public static final String FILE_PATH = "C:\\Users\\nicob\\dockerDir";
+    public static final String FILE_PATH = WINDOWS_MACHINE ? "C:\\Users\\nicob\\dockerDir" : "/Data";
 
     //activemq attributes
     public static final int AMQP_PORT = WINDOWS_MACHINE ? 32774 : 61616;
@@ -40,6 +40,6 @@ public class Constants {
      * checks the os and determines server address
      */
     public static String getServer() {
-        return (System.getProperty("os.name").toLowerCase().matches("(.*)windows(.*)")) ? "192.168.99.100" : "127.0.0.1";
+        return WINDOWS_MACHINE ? "192.168.99.100" : "127.0.0.1";
     }
 }
