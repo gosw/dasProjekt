@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * message class for production line messages
  */
 
-public class KafkaMessage implements Message {
+public class KafkaMessage extends Message {
     @JsonProperty("value")
     private Object value;
     @JsonProperty("booleanValue")
@@ -45,6 +45,6 @@ public class KafkaMessage implements Message {
     @Override
     public String toString() {
         return "Kafka-Message: " + itemName + "; value: " + value + "; booleanValue: " + booleanValue + "; intValue: " + intValue +
-                "; doubleValue: " + doubleValue + "; status: " + status + "; timeStamp: " + timeStamp;
+                "; doubleValue: " + doubleValue + "; status: " + status + "; orderNumber: " + getOrderNumber() + "; timeStamp: " + timeStamp;
     }
 }
