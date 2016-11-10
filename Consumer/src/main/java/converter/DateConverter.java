@@ -20,7 +20,7 @@ public class DateConverter {
     }
 
     public static Date getDateFromString(String dateString){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"); //
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"); //format of the date to parse
         Date date = null;
 
         try {

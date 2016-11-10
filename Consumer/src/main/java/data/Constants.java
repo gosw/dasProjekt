@@ -7,6 +7,9 @@ package data;
 
 public class Constants {
 
+    //are we on a windows machine
+    public static final boolean WINDOWS_MACHINE = true;
+
     //kafka attributes
     public static final int KAFKA_PORT = 1001;
     public static final String KAFKA_TOPIC = "prodData";
@@ -22,13 +25,13 @@ public class Constants {
     public static final String FILE_PATH = "C:\\Users\\nicob\\dockerDir";
 
     //activemq attributes
-    public static final int AMQP_PORT = 32774;
+    public static final int AMQP_PORT = WINDOWS_MACHINE ? 32774 : 61616;
     public static final String AMQP_TOPIC = "m_orders";
 
     //mongo-DB attributes
     public static final String MONGO_DB_ADDRESS = "localhost";
     public static final int MONGO_DB_PORT = 3001;
-    public static final String MONGO_DB_DATABASE = "dummyDb";
+    public static final String MONGO_DB_DATABASE = "meteor";
     public static final String MONGO_DB_COLLECTION_AMQP = "amqp_collection";
     public static final String MONGO_DB_COLLECTION_DIR = "dir_collection";
     public static final String MONGO_DB_COLLECTION_KAFKA = "kafka_collection";
@@ -37,7 +40,6 @@ public class Constants {
      * checks the os and determines server address
      */
     public static String getServer() {
-        return (System.getProperty("os.name").toLowerCase().matches("(.*)windows(.*)"))
-                ? "192.168.99.100" : "127.0.0.1";
+        return (System.getProperty("os.name").toLowerCase().matches("(.*)windows(.*)")) ? "192.168.99.100" : "127.0.0.1";
     }
 }

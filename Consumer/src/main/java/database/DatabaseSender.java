@@ -27,6 +27,7 @@ public class DatabaseSender {
     }
 
     public static DatabaseSender getDatabaseSender(){
+        //if no instance was created until now, create it
         if (instance == null){
             instance = new DatabaseSender();
         }
@@ -34,10 +35,10 @@ public class DatabaseSender {
     }
 
     public void insertMessage(Message message){
-        String jsonString = JsonConverter.getInstance().toJsonString(message);
-        //System.out.println(jsonString);
-        Document document = Document.parse(jsonString);
+        String jsonString = JsonConverter.getInstance().toJsonString(message); //convert message to json-String
+        Document document = Document.parse(jsonString); //create a document for the database with the json-String
 
+        //depending on the message, insert into one collection
         if (message instanceof ActiveMQMessage) {
             mongoDatabase.getCollection(Constants.MONGO_DB_COLLECTION_AMQP).insertOne(document);
         } else if (message instanceof DirectoryMessage) {

@@ -1,6 +1,5 @@
 package converter;
 
-import messages.ActiveMQMessage;
 import messages.DirectoryMessage;
 import messages.KafkaMessage;
 import messages.Message;
@@ -28,7 +27,7 @@ public class JsonConverter {
 
     public KafkaMessage getKafkaMessage(String jsonString){
         try {
-            return mapper.readValue(jsonString, KafkaMessage.class);
+            return mapper.readValue(jsonString, KafkaMessage.class); //convert json-String to kafka message
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +36,7 @@ public class JsonConverter {
 
     public DirectoryMessage getDirectoryMessage(String jsonString){
         try {
-            return mapper.readValue(jsonString, DirectoryMessage.class);
+            return mapper.readValue(jsonString, DirectoryMessage.class); //convert json-String to directory message
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +45,7 @@ public class JsonConverter {
 
     public String toJsonString(Message message){
         try {
-            return mapper.writeValueAsString(message);
+            return mapper.writeValueAsString(message); //convert message to json-String
         } catch (IOException e) {
             e.printStackTrace();
         }

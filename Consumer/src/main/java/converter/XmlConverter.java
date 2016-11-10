@@ -17,6 +17,9 @@ import java.io.StringReader;
  */
 
 public class XmlConverter {
+    /**
+     * convert a xml string to a document
+     */
     public static Document loadXmlFromString(String xml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -24,6 +27,9 @@ public class XmlConverter {
         return builder.parse(inputSource);
     }
 
+    /**
+     * creates a activemq message from a xml-string
+     */
     public static ActiveMQMessage getActiveMqMessage(String xml){
         ActiveMQMessage activeMQMessage = new ActiveMQMessage();
 
@@ -37,6 +43,7 @@ public class XmlConverter {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
 
+                //set attributes for the message
                 activeMQMessage.setCustomerNumber(Integer.parseInt(element.getElementsByTagName("customerNumber").item(0).getTextContent()));
                 activeMQMessage.setMaterialNumber(Integer.parseInt(element.getElementsByTagName("materialNumber").item(0).getTextContent()));
                 activeMQMessage.setOrderNumber(element.getElementsByTagName("orderNumber").item(0).getTextContent());
