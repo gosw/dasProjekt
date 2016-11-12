@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get update
 RUN apt-get install -y openjdk-8-jre
 
-# copy entrypoint 
+# copy entrypoint script on docker and set permissions
 COPY entrypoint.sh /
 RUN chmod u+x /entrypoint.sh
 
@@ -19,5 +19,10 @@ EXPOSE 5672
 EXPOSE 61613
 EXPOSE 1883
 EXPOSE 61614
+
+# Expose some folders
+VOLUME ["/activemq/data/activemq"]
+VOLUME ["/activemq/var/log/activemq"]
+VOLUME ["/activemq/opt/activemq/conf"]
 
 ENTRYPOINT /entrypoint.sh
