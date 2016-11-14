@@ -1,7 +1,9 @@
 package consumer;
 
 import converter.JsonConverter;
+import data.Constants;
 import messages.DirectoryMessage;
+import sender.DatabaseSender;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,12 +20,11 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
  */
 
 public class DirectoryListener implements Runnable {
-
     private static DirectoryListener instance;
-    private static String filePath;
+    private String filePath;
 
     private DirectoryListener(String filePath) {
-        DirectoryListener.filePath = filePath;
+        this.filePath = filePath;
     }
 
     public static DirectoryListener getDirectoryListener(String filePath){
@@ -70,8 +71,12 @@ public class DirectoryListener implements Runnable {
                         while (jsonString != null){
                             DirectoryMessage message = JsonConverter.getInstance().getDirectoryMessage(jsonString);
                             message.setOrderNumber(Consumer.getCURRENT_ORDER_NUMBER());
-//                            DatabaseSender.getDatabaseSender().insertMessage(message);
-                            System.out.println(message.toString());
+
+                            if (!Constants.TESTING) {
+                                DatabaseSender.getDatabaseSender().insertMessage(message);
+                            }
+                            System.out.println(message);
+
                             jsonString = data.readLine();
                         }
                         data.close();
