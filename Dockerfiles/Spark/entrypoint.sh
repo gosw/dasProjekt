@@ -12,10 +12,10 @@ sleep 5
 sleep 10
 
 #submit job to cluster
-./spark/bin/spark-submit \
-  --class consumer.Consumer \
-  --master spark://spark:7077 \
-  /consumer.jar
+#./spark/bin/spark-submit \
+#  --class SparkHandler \
+#  --master spark://spark:7077 \
+#  /SparkConsumer.jar
 
 # run endless loop to keep alive
 /usr/bin/tail -f /dev/null

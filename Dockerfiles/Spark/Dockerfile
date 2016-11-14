@@ -8,9 +8,9 @@ RUN apt-get install -y openjdk-8-jre
 COPY entrypoint.sh /
 RUN chmod u+x /entrypoint.sh
 
-#Consumer in Spark
-COPY consumer.jar /
-RUN chmod u+x /consumer.jar
+# copy spark jar on docker and set permissions
+#COPY SparkConsumer.jar /
+#RUN chmod u+x /SparkConsumer.jar
 
 # install spark
 ADD http://www-eu.apache.org/dist/spark/spark-2.0.1/spark-2.0.1-bin-hadoop2.7.tgz /spark.tgz

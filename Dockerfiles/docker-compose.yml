@@ -20,18 +20,18 @@ services:
         links:
             - kafka
             - activemq
-#    spark:
-#      build: ./Spark
-#      links:
-#          - kafka
-#      ports:
-#          - "8080:8080"
-#          - "7077:7077"
-#      environment:
-#          - SPARK_OPTS="--driver-memory=5g --executor-memory=5g"
-#          - JAVA_OPTS=-verbose:gc -Xms1G -Xmx1G
-#     mongo:
-#	build:./MongoDB
-#	links:
-#	ports:
-#	    - "27017:27017"
+            - mongodb
+    mongodb:
+        build: ./MongoDB
+        ports:
+            - "27017:27017"
+    spark:
+        build: ./Spark
+        links:
+            - kafka
+        ports:
+            - "8080:8080"
+            - "7077:7077"
+        environment:
+            - SPARK_OPTS="--driver-memory=5g --executor-memory=5g"
+            - JAVA_OPTS=-verbose:gc -Xms1G -Xmx1G
