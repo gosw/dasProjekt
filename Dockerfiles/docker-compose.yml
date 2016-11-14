@@ -1,6 +1,11 @@
 version: '2'
 
 services:
+    kafka:
+        build: ./Kafka
+        ports:
+            - "2181:2181"
+            - "9092:9092"
     activemq:
         build: ./Activemq
         ports:
@@ -10,18 +15,18 @@ services:
             - "61613:61613"
             - "1883:1883"
             - "61614:61614"
-    kafka:
-        build: ./Kafka
-        ports:
-            - "2181:2181"
-            - "9092:9092"
     taktstrasse:
         build: ./Taktstrasse
         links:
-            - activemq
             - kafka
+            - activemq
+            - mongodb
+    mongodb:
+        build: ./MongoDB
+        ports:
+            - "27017:27017"
     spark:
-        build: ./spark
+        build: ./Spark
         links:
             - kafka
         ports:
