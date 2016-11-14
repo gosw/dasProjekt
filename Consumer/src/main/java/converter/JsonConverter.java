@@ -14,12 +14,12 @@ import java.io.IOException;
  */
 
 public class JsonConverter {
-    private static JsonConverter ourInstance = new JsonConverter();
+    private static JsonConverter instance = new JsonConverter();
 
     private ObjectMapper mapper = new ObjectMapper();
 
     public static JsonConverter getInstance() {
-        return ourInstance;
+        return instance;
     }
 
     private JsonConverter() {

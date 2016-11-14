@@ -10,16 +10,16 @@ import java.util.Date;
  */
 
 public class DateConverter {
-    private static DateConverter dateConverter = new DateConverter();
+    private static DateConverter instance = new DateConverter();
 
     public static DateConverter getInstance() {
-        return dateConverter;
+        return instance;
     }
 
     private DateConverter() {
     }
 
-    public static Date getDateFromString(String dateString){
+    public Date getDateFromString(String dateString){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"); //format of the date to parse
         Date date = null;
 

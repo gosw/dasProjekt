@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import converter.JsonConverter;
 import data.Constants;
 
-import database.DatabaseSender;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
@@ -13,6 +12,8 @@ import kafka.message.MessageAndMetadata;
 import messages.KafkaMessage;
 
 import org.apache.kafka.common.serialization.StringDeserializer;
+import sender.DatabaseSender;
+import sender.KafkaProducer;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,6 @@ import java.util.concurrent.Executors;
  */
 
 public class KafkaConsumer implements Runnable {
-    //class attributes
     private static KafkaConsumer instance;
     private String topicName;
     private ConsumerConfig consumerConfig;
@@ -56,8 +56,6 @@ public class KafkaConsumer implements Runnable {
     }
 
     public void run() {
-        //System.out.println("Starting the KafkaConsumer...");
-
         ConsumerConnector connector = kafka.consumer.Consumer.createJavaConsumerConnector(consumerConfig);
         Map<String, List<KafkaStream<byte[], byte[]>>> messages = connector.createMessageStreams(ImmutableMap.of(topicName, 1));
         List<KafkaStream<byte[], byte[]>> messageStreams = messages.get(topicName);
@@ -70,12 +68,14 @@ public class KafkaConsumer implements Runnable {
                     KafkaMessage message = JsonConverter.getInstance().getKafkaMessage(jsonString);
                     message.setValue(message.getValue());
                     message.setOrderNumber(Consumer.getCURRENT_ORDER_NUMBER());
-//                    DatabaseSender.getDatabaseSender().insertMessage(message);
-                    System.out.println(message.toString());
+                    //KafkaProducer.getInstance().sendMessage(jsonString);
+                    if (!Constants.TESTING) {
+                        DatabaseSender.getDatabaseSender().insertMessage(message);
+                    }
+                    System.out.println(message);
 //                    FiniteMachine.handleMessage(sm, message);
                 }
             });
         }
-
     }
 }

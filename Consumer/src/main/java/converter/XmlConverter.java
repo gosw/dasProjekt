@@ -17,6 +17,15 @@ import java.io.StringReader;
  */
 
 public class XmlConverter {
+    private static XmlConverter instance = new XmlConverter();
+
+    public static XmlConverter getInstance() {
+        return instance;
+    }
+
+    private XmlConverter() {
+    }
+
     /**
      * convert a xml string to a document
      */
@@ -30,7 +39,7 @@ public class XmlConverter {
     /**
      * creates a activemq message from a xml-string
      */
-    public static ActiveMQMessage getActiveMqMessage(String xml){
+    public ActiveMQMessage getActiveMqMessage(String xml){
         ActiveMQMessage activeMQMessage = new ActiveMQMessage();
 
         try {
@@ -47,7 +56,7 @@ public class XmlConverter {
                 activeMQMessage.setCustomerNumber(Integer.parseInt(element.getElementsByTagName("customerNumber").item(0).getTextContent()));
                 activeMQMessage.setMaterialNumber(Integer.parseInt(element.getElementsByTagName("materialNumber").item(0).getTextContent()));
                 activeMQMessage.setOrderNumber(element.getElementsByTagName("orderNumber").item(0).getTextContent());
-                activeMQMessage.setTimeStamp(DateConverter.getDateFromString(element.getElementsByTagName("timeStamp").item(0).getTextContent()));
+                activeMQMessage.setTimeStamp(DateConverter.getInstance().getDateFromString(element.getElementsByTagName("timeStamp").item(0).getTextContent()));
             }
 
         } catch (Exception e) {

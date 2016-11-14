@@ -1,4 +1,4 @@
-package database;
+package sender;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -21,20 +21,20 @@ public class DatabaseSender {
 
     private static DatabaseSender instance;
 
-    private DatabaseSender(){
+    private DatabaseSender() {
         mongoClient = new MongoClient(Constants.MONGO_DB_ADDRESS, Constants.MONGO_DB_PORT);
         mongoDatabase = mongoClient.getDatabase(Constants.MONGO_DB_DATABASE);
     }
 
-    public static DatabaseSender getDatabaseSender(){
+    public static DatabaseSender getDatabaseSender() {
         //if no instance was created until now, create it
-        if (instance == null){
+        if (instance == null) {
             instance = new DatabaseSender();
         }
         return instance;
     }
 
-    public void insertMessage(Message message){
+    public void insertMessage(Message message) {
         String jsonString = JsonConverter.getInstance().toJsonString(message); //convert message to json-String
         Document document = Document.parse(jsonString); //create a document for the database with the json-String
 
