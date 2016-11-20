@@ -1,7 +1,9 @@
 package consumer;
 
 import converter.JsonConverter;
+import data.Constants;
 import messages.DirectoryMessage;
+import sender.DatabaseSender;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,12 +20,11 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
  */
 
 public class DirectoryListener implements Runnable {
-
     private static DirectoryListener instance;
-    private static String filePath;
+    private String filePath;
 
     private DirectoryListener(String filePath) {
-        DirectoryListener.filePath = filePath;
+        this.filePath = filePath;
     }
 
     public static DirectoryListener getDirectoryListener(String filePath){
@@ -35,6 +36,7 @@ public class DirectoryListener implements Runnable {
 
     private static void checkDirectory(Path path) {
         try {
+            //check if given path is a folder
             boolean isFolder = (boolean) Files.getAttribute(path, "basic:isDirectory", LinkOption.NOFOLLOW_LINKS);
 
             if (!isFolder){
@@ -43,8 +45,6 @@ public class DirectoryListener implements Runnable {
         } catch (IOException ioEx) {
             ioEx.printStackTrace();
         }
-
-        System.out.println("Watching path: " + path);
 
         FileSystem fileSystem = path.getFileSystem();
 
@@ -57,6 +57,7 @@ public class DirectoryListener implements Runnable {
                 watchKey = watchService.take();
 
                 WatchEvent.Kind kind = null;
+                //all events in the given folder are noticed
                 for (WatchEvent watchEvent : watchKey.pollEvents()) {
                     kind = watchEvent.kind();
                     if (OVERFLOW == kind) {
@@ -69,8 +70,13 @@ public class DirectoryListener implements Runnable {
                         String jsonString = data.readLine();
                         while (jsonString != null){
                             DirectoryMessage message = JsonConverter.getInstance().getDirectoryMessage(jsonString);
-//                            DatabaseSender.getDatabaseSender().insertMessage(message);
-                            System.out.println(message.toString());
+                            message.setOrderNumber(Consumer.getCURRENT_ORDER_NUMBER());
+
+                            if (!Constants.TESTING) {
+                                DatabaseSender.getDatabaseSender().insertMessage(message);
+                            }
+                            System.out.println(message);
+
                             jsonString = data.readLine();
                         }
                         data.close();

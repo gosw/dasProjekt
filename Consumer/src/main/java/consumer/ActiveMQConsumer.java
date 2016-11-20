@@ -7,21 +7,25 @@ import javax.jms.*;
 
 import messages.ActiveMQMessage;
 import org.apache.activemq.*;
+import sender.DatabaseSender;
 
 /**
  * Created by nicob on 02.11.2016.
+ * consumer for activemq messages
  */
 
 public class ActiveMQConsumer implements Runnable {
-    Session session = null;
-    Connection connection = null;
-    String topicName = "";
+    Session session;
+    Connection connection;
+    String topicName;
 
     private static ActiveMQConsumer instance;
 
+
     private ActiveMQConsumer(String topicName, int port) {
         this.topicName = topicName;
-        String amqpServer = "tcp://" + Constants.getServer() + ":" + port;
+        String amqpServer = Constants.TESTING ? "tcp://" + Constants.getServer() + ":" + port :
+                                "failover:tcp://activemq:" + port;
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(amqpServer);
         try {
             connection = connectionFactory.createConnection();
@@ -39,19 +43,22 @@ public class ActiveMQConsumer implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Bin im ActiveMQ consumer.Consumer");
         try {
+            //start connection
             connection.start();
 
+            //create a session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
+            //determine destination
             Destination destination = session.createTopic(topicName + "?consumer.dispatchAsync= false");
 
+            //create consumer
             MessageConsumer messageConsumer = session.createConsumer(destination);
 
+            //receive and convert message
             while (true) {
                 messageConsumer.setMessageListener(message -> {
-                    System.out.println("Bin im Message-Listener");
                     if (message instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message;
                         String text = "";
@@ -62,7 +69,11 @@ public class ActiveMQConsumer implements Runnable {
                             e.printStackTrace();
                         }
 
-                        ActiveMQMessage mqMessage = XmlConverter.getActiveMqMessage(text);
+                        ActiveMQMessage mqMessage = XmlConverter.getInstance().getActiveMqMessage(text);
+                        Consumer.setCURRENT_ORDER_NUMBER(mqMessage.getOrderNumber());
+                        if (!Constants.TESTING) {
+                            DatabaseSender.getDatabaseSender().insertMessage(mqMessage);
+                        }
                         System.out.println(mqMessage);
                     } else {
                         System.out.println(message);
@@ -83,6 +94,5 @@ public class ActiveMQConsumer implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("Bin im ActiveMQ consumer.Consumer fertig");
     }
 }

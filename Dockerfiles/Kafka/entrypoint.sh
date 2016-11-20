@@ -1,4 +1,6 @@
-#!/bin/bash
+!/bin/bash &
+
+echo "advertised.listeners=PLAINTEXT://kafka:9092" >> /kafka/config/server.properties
 
 # start kafka
 /kafka/bin/zookeeper-server-start.sh /kafka/config/zookeeper.properties &
